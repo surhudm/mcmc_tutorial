@@ -20,3 +20,6 @@ module load anaconda3
 python3 single_processor_code.py
 mpirun -np 32 python3 mpicode.py
 ```
+
+Currently the code to plot the outputs have been commented out. Please feel 
+free to uncomment, but reduce the dimensions to 5 instead of 50.
