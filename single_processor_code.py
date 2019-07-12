@@ -17,13 +17,15 @@ class gaussian_md:
     # This function should return log(Prob) = -Chisq/2 upto a additive constant
     # For a Gaussian distribution this will be -1/2.(x-mu)^T Cinv (x-mu)
     #
-    def lnprob(self, x, mu, icov):
-        Delta = (x-mu)
-        return -np.dot(Delta, np.dot(icov, Delta))/2.0
+    def lnprob(self, x):
+        Delta = (x-self.mu)
+        # Test a slow calculation by introducing a sleep command
+        # time.sleep(0.1)
+        return -np.dot(Delta, np.dot(self.icov, Delta))/2.0
 
     # Get a emcee sampler with the object
     def getsampler(self, nwalkers, ndim):
-        return emcee.EnsembleSampler(nwalkers, ndim, self.lnprob, args=[self.mu, self.icov])
+        return emcee.EnsembleSampler(nwalkers, ndim, self.lnprob, args=[])
 
 if __name__ == "__main__":
 
@@ -31,11 +33,11 @@ if __name__ == "__main__":
     np.random.seed(10)
 
     # Define number of dimensions
-    ndim = 5
+    ndim = 50
     
     # Define random means and some covariance (first just a diagonal covariance)
     means = np.random.rand(ndim) * 5.0
-    cov = np.diag(np.linspace(5.0, 10.0, 5))
+    cov = np.diag(np.linspace(5.0, 10.0, ndim))
 
     aa = gaussian_md(means, cov)
 
@@ -58,6 +60,7 @@ if __name__ == "__main__":
     print("Shape of sampler.chain", np.shape(sampler.chain))
     print("Shape of sampler.flatchain", np.shape(sampler.flatchain))
 
+    '''
     import matplotlib.pyplot as pl
     import corner
 
@@ -78,3 +81,4 @@ if __name__ == "__main__":
 
     fig = corner.corner(sampler.chain.reshape(-1, ndim))
     fig.savefig("Triangle.png")
+    '''

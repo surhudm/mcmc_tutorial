@@ -3,6 +3,7 @@
 import numpy as np
 import emcee
 import sys
+import time
 
 # Add statement to import a pool of workers
 from emcee.utils import MPIPool
@@ -22,6 +23,8 @@ class gaussian_md:
     #
     def lnprob(self, x):
         Delta = (x-self.mu)
+        # Test a slow calculation by introducing a sleep command
+        # time.sleep(0.1)
         return -np.dot(Delta, np.dot(self.icov, Delta))/2.0
 
     # Get a emcee sampler with the object
@@ -45,7 +48,7 @@ if __name__ == "__main__":
     
     # Define random means and some covariance (first just a diagonal covariance)
     means = np.random.rand(ndim) * 5.0
-    cov = np.diag(np.linspace(5.0, 10.0, 5))
+    cov = np.diag(np.linspace(5.0, 10.0, ndim))
 
     aa = gaussian_md(means, cov)
 
@@ -69,7 +72,7 @@ if __name__ == "__main__":
     print("Shape of sampler.flatchain", np.shape(sampler.flatchain))
 
     pool.close()
-
+    '''
     import matplotlib.pyplot as pl
     import corner
 
@@ -90,3 +93,4 @@ if __name__ == "__main__":
 
     fig = corner.corner(sampler.chain.reshape(-1, ndim))
     fig.savefig("Triangle.png")
+    '''
